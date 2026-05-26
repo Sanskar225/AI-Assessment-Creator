@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display:ital@0;1&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: #F5F4F0;
+    color: #1A1A1A;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-orange-500 hover:bg-orange-600 text-white font-medium text-sm px-4 py-2.5 rounded-[10px] 
+           flex items-center gap-1.5 transition-all duration-150 cursor-pointer border-none
+           shadow-[0_2px_4px_rgba(232,81,10,0.25)] hover:shadow-[0_4px_8px_rgba(232,81,10,0.3)]
+           hover:-translate-y-px active:translate-y-0;
+  }
+
+  .btn-secondary {
+    @apply bg-white hover:bg-[#F5F4F0] text-[#1A1A1A] font-medium text-sm px-4 py-2.5 rounded-[10px]
+           flex items-center gap-1.5 transition-all duration-150 cursor-pointer
+           border border-[#D0CEC8] hover:border-[#bbb];
+  }
+
+  .form-input {
+    @apply w-full px-3.5 py-2.5 border border-[#D0CEC8] rounded-[10px] text-sm font-[DM_Sans]
+           text-[#1A1A1A] bg-white outline-none transition-all duration-150
+           focus:border-orange-500 focus:shadow-[0_0_0_3px_rgba(232,81,10,0.08)]
+           placeholder:text-[#9A9A9A];
+  }
+
+  .card {
+    @apply bg-white border border-[#E2E0DA] rounded-[20px] p-7;
+  }
+
+  .diff-easy {
+    @apply bg-[#DCFCE7] text-[#166534] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide;
+  }
+
+  .diff-medium {
+    @apply bg-[#FEF9C3] text-[#854D0E] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide;
+  }
+
+  .diff-hard {
+    @apply bg-[#FEE2E2] text-[#991B1B] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide;
+  }
+}
+
+/* Spinner animation */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.animate-spin-smooth {
+  animation: spin 0.9s linear infinite;
+}
+
+/* Progress bar animation */
+@keyframes progress-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* Print styles */
+@media print {
+  .no-print { display: none !important; }
+  body { background: white; }
+}
