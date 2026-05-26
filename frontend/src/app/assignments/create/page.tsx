@@ -6,9 +6,9 @@ import { useDropzone } from 'react-dropzone';
 import { ArrowLeft, ArrowRight, Plus, X, CloudUpload, FileCheck, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
-import { useAppDispatch } from '../../hooks/useTypedSelector';
-import { submitAssignment } from '../../store/slices/assignmentsSlice';
-import type { AssignmentFormData, QuestionType } from '../../types';
+import { useAppDispatch } from '../../../hooks/useTypedSelector';
+import { submitAssignment } from '../../../store/slices/assignmentsSlice';
+import type { AssignmentFormData, QuestionType } from '../../../types';
 
 const QUESTION_TYPE_OPTIONS = [
   'Multiple Choice Questions', 'Short Questions', 'Long Answer Questions',
