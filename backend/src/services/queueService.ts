@@ -1,9 +1,9 @@
 import { Queue, Worker, Job } from 'bullmq';
-import { getRedisClient } from '../utils/redis.js';
-import { generateQuestionPaper } from './aiService.js';
-import { Assignment } from '../models/Assignment.js';
-import { broadcastJobProgress, broadcastJobComplete, broadcastJobError } from '../utils/websocket.js';
-import type { JobProgress } from '../types/index.js';
+import { getRedisClient } from '../utils/redis';
+import { generateQuestionPaper } from './aiService';
+import { Assignment } from '../models/Assignment';
+import { broadcastJobProgress, broadcastJobComplete, broadcastJobError } from '../utils/websocket';
+import type { JobProgress } from '../types/index';
 
 export const GENERATION_QUEUE = 'generation';
 
@@ -12,7 +12,9 @@ let generationQueue: Queue | null = null;
 export function getGenerationQueue(): Queue {
   if (!generationQueue) {
     const connection = getRedisClient();
-    generationQueue = new Queue(GENERATION_QUEUE, { connection });
+    generationQueue = new Queue(GENERATION_QUEUE, {
+  connection: connection as any,
+});
   }
   return generationQueue;
 }
@@ -100,7 +102,10 @@ export function startWorker(): Worker {
         throw error;
       }
     },
-    { connection, concurrency: 2 }
+    {
+  connection: connection as any,
+  concurrency: 2,
+}
   );
 
   worker.on('completed', (job) => {

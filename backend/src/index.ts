@@ -7,10 +7,10 @@ import rateLimit from 'express-rate-limit';
 import mongoose from 'mongoose';
 import path from 'path';
 import fs from 'fs';
-import { getRedisClient } from './utils/redis.js';
-import { initWebSocketServer } from './utils/websocket.js';
-import { startWorker } from './services/queueService.js';
-import assignmentRoutes from './routes/assignments.js';
+import { getRedisClient } from './utils/redis';
+import { initWebSocketServer } from './utils/websocket';
+import { startWorker } from './services/queueService';
+import assignmentRoutes from './routes/assignments';
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '4000');

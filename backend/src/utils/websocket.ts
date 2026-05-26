@@ -1,5 +1,5 @@
 import { WebSocket, WebSocketServer } from 'ws';
-import type { JobProgress, WSMessage } from '../types/index.js';
+import type { JobProgress, WSMessage } from '../types/index';
 
 let wss: WebSocketServer | null = null;
 const clients = new Map<string, Set<WebSocket>>();

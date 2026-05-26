@@ -8,8 +8,8 @@ import {
   getAssignmentStatus,
   deleteAssignment,
   downloadAssignmentPDF,
-} from '../controllers/assignmentController.js';
-import { createAssignmentValidators, handleValidationErrors } from '../middleware/validate.js';
+} from '../controllers/assignmentController';
+import { createAssignmentValidators, handleValidationErrors } from '../middleware/validate';
 
 const router = Router();
 

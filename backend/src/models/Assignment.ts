@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
-import type { GeneratedPaper, QuestionType } from '../types/index.js';
+import type { GeneratedPaper, QuestionType } from '../types/index';
 
 export interface IAssignment extends Document {
   title: string;

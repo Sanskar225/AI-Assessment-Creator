@@ -1,6 +1,6 @@
 import PDFDocument from 'pdfkit';
 import type { Response } from 'express';
-import type { GeneratedPaper } from '../types/index.js';
+import type { GeneratedPaper } from '../types/index';
 
 const DIFF_COLORS: Record<string, string> = {
   Easy: '#166534',

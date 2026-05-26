@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { Assignment } from '../models/Assignment.js';
-import { addGenerationJob } from '../services/queueService.js';
-import { generatePDF } from '../services/pdfService.js';
-import { cacheGet, cacheSet, cacheDel } from '../utils/redis.js';
-import type { CreateAssignmentDto } from '../types/index.js';
+import { Assignment } from '../models/Assignment';
+import { addGenerationJob } from '../services/queueService';
+import { generatePDF } from '../services/pdfService';
+import { cacheGet, cacheSet, cacheDel } from '../utils/redis';
+import type { CreateAssignmentDto } from '../types/index';
 
 const CACHE_TTL = 300; // 5 minutes
 

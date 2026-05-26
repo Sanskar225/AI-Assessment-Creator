@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
-import type { GeneratedPaper, QuestionType } from '../types/index.js';
+import type { GeneratedPaper, QuestionType } from '../types/index';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
