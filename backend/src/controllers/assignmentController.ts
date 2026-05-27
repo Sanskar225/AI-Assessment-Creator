@@ -9,6 +9,12 @@ const CACHE_TTL = 300; // 5 minutes
 
 export const createAssignment = async (req: Request, res: Response): Promise<void> => {
   try {
+
+    // Parse questionTypes from FormData string
+    if (typeof req.body.questionTypes === 'string') {
+      req.body.questionTypes = JSON.parse(req.body.questionTypes);
+    }
+
     const dto: CreateAssignmentDto = req.body;
 
     const assignment = new Assignment({
@@ -54,7 +60,10 @@ export const getAssignments = async (_req: Request, res: Response): Promise<void
       return;
     }
 
-    const assignments = await Assignment.find({}, '-paper.sections.questions.text').sort({ createdAt: -1 }).limit(100);
+    const assignments = await Assignment.find({}, '-paper.sections.questions.text')
+      .sort({ createdAt: -1 })
+      .limit(100);
+
     await cacheSet('assignments:list', assignments, CACHE_TTL);
 
     res.json({ success: true, data: assignments });
@@ -76,6 +85,7 @@ export const getAssignment = async (req: Request, res: Response): Promise<void> 
     }
 
     const assignment = await Assignment.findById(id);
+
     if (!assignment) {
       res.status(404).json({ success: false, message: 'Assignment not found' });
       return;
@@ -95,52 +105,93 @@ export const getAssignment = async (req: Request, res: Response): Promise<void> 
 export const getAssignmentStatus = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    const assignment = await Assignment.findById(id, 'status jobId title subject');
+
+    const assignment = await Assignment.findById(
+      id,
+      'status jobId title subject'
+    );
+
     if (!assignment) {
-      res.status(404).json({ success: false, message: 'Assignment not found' });
+      res.status(404).json({
+        success: false,
+        message: 'Assignment not found',
+      });
       return;
     }
-    res.json({ success: true, data: { status: assignment.status, jobId: assignment.jobId } });
+
+    res.json({
+      success: true,
+      data: {
+        status: assignment.status,
+        jobId: assignment.jobId,
+      },
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Failed to get status' });
+    res.status(500).json({
+      success: false,
+      message: 'Failed to get status',
+    });
   }
 };
 
 export const deleteAssignment = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
+
     const assignment = await Assignment.findByIdAndDelete(id);
+
     if (!assignment) {
-      res.status(404).json({ success: false, message: 'Assignment not found' });
+      res.status(404).json({
+        success: false,
+        message: 'Assignment not found',
+      });
       return;
     }
 
     await cacheDel(`assignment:${id}`);
     await cacheDel('assignments:list');
 
-    res.json({ success: true, message: 'Assignment deleted' });
+    res.json({
+      success: true,
+      message: 'Assignment deleted',
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Failed to delete assignment' });
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete assignment',
+    });
   }
 };
 
 export const downloadAssignmentPDF = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
+
     const assignment = await Assignment.findById(id);
 
     if (!assignment) {
-      res.status(404).json({ success: false, message: 'Assignment not found' });
+      res.status(404).json({
+        success: false,
+        message: 'Assignment not found',
+      });
       return;
     }
+
     if (assignment.status !== 'completed' || !assignment.paper) {
-      res.status(400).json({ success: false, message: 'Paper not yet generated' });
+      res.status(400).json({
+        success: false,
+        message: 'Paper not yet generated',
+      });
       return;
     }
 
     generatePDF(assignment.paper, res);
   } catch (error) {
     console.error('downloadPDF error:', error);
-    res.status(500).json({ success: false, message: 'Failed to generate PDF' });
+
+    res.status(500).json({
+      success: false,
+      message: 'Failed to generate PDF',
+    });
   }
 };

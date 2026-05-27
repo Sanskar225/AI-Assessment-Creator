@@ -2,9 +2,9 @@
 
 import { useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { useAppDispatch, useAppSelector } from '../../../hooks/useTypedSelector';
-import { useWebSocket } from '../../../hooks/useWebSocket';
-import { loadAssignment } from '../../../store/slices/assignmentsSlice';
+import { useAppDispatch, useAppSelector } from '../../../../hooks/useTypedSelector';
+import { useWebSocket } from '../../../../hooks/useWebSocket';
+import { loadAssignment } from '../../../../store/slices/assignmentsSlice';
 import { CheckCircle2, Circle, Loader2, Wifi } from 'lucide-react';
 
 const STEPS = [
