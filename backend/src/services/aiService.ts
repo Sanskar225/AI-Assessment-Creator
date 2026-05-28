@@ -1,12 +1,9 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import OpenAI from 'openai';
 import type { GeneratedPaper, QuestionType } from '../types/index';
 
-const genAI = new GoogleGenerativeAI(
-  process.env.GEMINI_API_KEY || ''
-);
-
-const model = genAI.getGenerativeModel({
-  model: 'gemini-1.5-flash',
+const client = new OpenAI({
+  apiKey: process.env.OPENROUTER_API_KEY,
+  baseURL: 'https://openrouter.ai/api/v1',
 });
 
 function buildPrompt(params: {
@@ -28,8 +25,7 @@ function buildPrompt(params: {
 
   const timeAllowed = Math.max(40, totalQ * 2);
 
-  return `
-You are an expert Indian school teacher creating a structured examination question paper.
+  return `You are an expert Indian school teacher creating a structured examination question paper.
 
 Generate a complete, well-organized question paper.
 
@@ -46,24 +42,29 @@ Question Types Required:
 ${params.questionTypes
   .map(
     (qt) =>
-      `- ${qt.type}: ${qt.questions} questions, ${qt.marks} marks each`
+      `- ${qt.type}: ${qt.questions} questions, ${qt.marks} mark${
+        qt.marks > 1 ? 's' : ''
+      } each`
   )
   .join('\n')}
 
-${params.additionalInfo
+${
+  params.additionalInfo
     ? `Additional Instructions: ${params.additionalInfo}`
-    : ''}
+    : ''
+}
 
 IMPORTANT RULES:
-1. Each question type becomes its own Section
+1. Each question type becomes its own Section (A, B, C, D, etc.)
 2. Difficulty MUST be exactly one of:
    - Easy
    - Medium
    - Hard
 3. Questions must be curriculum appropriate
-4. Return ONLY valid JSON
-5. No markdown
-6. No explanation
+4. Questions should be realistic and exam quality
+5. Return ONLY valid JSON
+6. No markdown
+7. No explanation
 
 Required JSON structure:
 
@@ -77,7 +78,8 @@ Required JSON structure:
   "totalQuestions": ${totalQ},
   "generalInstructions": [
     "All questions are compulsory unless stated otherwise.",
-    "Read all questions carefully before answering."
+    "Read all questions carefully before answering.",
+    "Write answers clearly and neatly."
   ],
   "sections": [
     {
@@ -95,8 +97,7 @@ Required JSON structure:
       ]
     }
   ]
-}
-`;
+}`;
 }
 
 export async function generateQuestionPaper(params: {
@@ -113,15 +114,27 @@ export async function generateQuestionPaper(params: {
 
   const prompt = buildPrompt(params);
 
-  onProgress?.('Connecting to Gemini AI', 25);
+  onProgress?.('Connecting to AI model', 25);
 
   onProgress?.('Generating questions with AI', 40);
 
-  const result = await model.generateContent(prompt);
+  const completion = await client.chat.completions.create({
+    model: 'openai/gpt-3.5-turbo',
 
-  const response = await result.response;
+    messages: [
+      {
+        role: 'user',
+        content: prompt,
+      },
+    ],
 
-  const fullText = response.text();
+    temperature: 0.7,
+
+    max_tokens: 4000,
+  });
+
+  const fullText =
+    completion.choices[0]?.message?.content || '';
 
   onProgress?.('Parsing and structuring response', 85);
 
@@ -152,8 +165,10 @@ export async function generateQuestionPaper(params: {
   // Normalize difficulty
   paper.sections = paper.sections.map((section) => ({
     ...section,
+
     questions: section.questions.map((q) => ({
       ...q,
+
       difficulty: normalizeDifficulty(q.difficulty),
     })),
   }));
